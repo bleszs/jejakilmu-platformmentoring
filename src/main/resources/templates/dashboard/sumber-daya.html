@@ -1,0 +1,585 @@
+﻿<!DOCTYPE html>
+<html lang="id" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Sumber Daya | Jejak Ilmu - Platform Mentoring Akademik</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        "outline-variant": "#c6c6d0",
+        "surface-variant": "#e1e3e4",
+        "secondary-container": "#fdb965",
+        "primary-fixed-dim": "#b6c4fe",
+        "glass-border": "rgba(255,255,255,0.4)",
+        "error": "#ba1a1a",
+        "surface-container-low": "#f3f4f5",
+        "surface-container-highest": "#e1e3e4",
+        "on-secondary-container": "#754900",
+        "inverse-on-surface": "#f0f1f2",
+        "success-green": "#10b981",
+        "surface-dim": "#d9dadb",
+        "on-error-container": "#93000a",
+        "warning-gold": "#fea619",
+        "surface-container-high": "#e7e8e9",
+        "error-crimson": "#ba1a1a",
+        "surface-container": "#edeeef",
+        "error-container": "#ffdad6",
+        "on-primary-fixed": "#061748",
+        "on-background": "#191c1d",
+        "on-primary": "#ffffff",
+        "surface": "#f8f9fa",
+        "outline": "#767680",
+        "primary": "#000000",
+        "background": "#f8f9fa",
+        "on-surface-variant": "#45464f",
+        "primary-container": "#061748",
+        "on-primary-container": "#7382b7",
+        "primary-fixed": "#dce1ff",
+        "on-primary-fixed-variant": "#364475",
+        "on-surface": "#191c1d",
+        "surface-container-lowest": "#ffffff"
+      },
+      spacing: {
+        "margin-mobile": "16px",
+        "topbar-height": "72px",
+        "base": "8px",
+        "margin-desktop": "32px",
+        "container-max": "1280px",
+        "sidebar-width": "280px",
+        "gutter": "24px"
+      },
+      fontFamily: {
+        "headline-md": ["Inter"],
+        "body-lg": ["Inter"],
+        "body-md": ["Inter"],
+        "label-sm": ["Inter"],
+        "caption-xs": ["Inter"],
+        "display-lg": ["Inter"]
+      },
+      fontSize: {
+        "headline-md": ["24px", {"lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "900"}],
+        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "500"}],
+        "body-md": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+        "label-sm": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "800"}],
+        "caption-xs": ["10px", {"lineHeight": "1", "letterSpacing": "0.2em", "fontWeight": "900"}],
+        "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "900"}]
+      }
+    }
+  }
+}
+</script>
+<style>
+  body { font-family: 'Inter', sans-serif; background-color: #f8f9fa; }
+  .premium-card { border-left: 4px solid; transition: all 0.3s cubic-bezier(0.4,0,0.2,1); }
+  .premium-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0,17,66,0.1); }
+  .tab-btn.active { color: #000; border-bottom-color: #000; font-weight: 700; }
+  .tab-btn { transition: all 0.2s; }
+  /* ===== COLLAPSIBLE SIDEBAR ===== */
+  #mainSidebar { width:280px; transition:width 0.3s cubic-bezier(0.4,0,0.2,1); overflow:hidden; }
+  body.sb-collapsed #mainSidebar { width:64px; }
+  #mainTopbar { left:280px; transition:left 0.3s cubic-bezier(0.4,0,0.2,1); }
+  body.sb-collapsed #mainTopbar { left:64px; }
+  #mainContent { margin-left:280px; transition:margin-left 0.3s cubic-bezier(0.4,0,0.2,1); }
+  body.sb-collapsed #mainContent { margin-left:64px; }
+  .sb-label { white-space:nowrap; overflow:hidden; transition:opacity 0.2s,max-width 0.25s cubic-bezier(0.4,0,0.2,1); max-width:200px; }
+  body.sb-collapsed .sb-label { opacity:0; max-width:0; }
+  .sb-logo-text { overflow:hidden; transition:opacity 0.2s,max-width 0.25s cubic-bezier(0.4,0,0.2,1); max-width:180px; white-space:nowrap; }
+  body.sb-collapsed .sb-logo-text { opacity:0; max-width:0; }
+  .sb-logo-img { transition:height 0.3s; }
+  body.sb-collapsed .sb-logo-img { height:36px !important; }
+  .sb-item { display:flex; align-items:center; gap:16px; padding:12px 16px; border-radius:8px; transition:all 0.2s; text-decoration:none; white-space:nowrap; position:relative; }
+  body.sb-collapsed .sb-item { justify-content:center; gap:0; padding:12px 8px; }
+  body.sb-collapsed .sb-item[data-tip]::after { content:attr(data-tip); position:absolute; left:calc(100% + 10px); top:50%; transform:translateY(-50%); background:#001142; color:white; padding:5px 10px; border-radius:8px; font-size:11px; font-weight:800; white-space:nowrap; opacity:0; pointer-events:none; transition:opacity 0.15s; z-index:1000; border:1px solid rgba(255,255,255,0.15); letter-spacing:0.05em; text-transform:uppercase; }
+  body.sb-collapsed .sb-item[data-tip]:hover::after { opacity:1; }
+</style>
+</head>
+<body class="bg-background text-on-surface">
+
+<!-- ==================== SIDEBAR (Sumber Daya active) ==================== -->
+<nav id="mainSidebar" class="fixed left-0 top-0 bottom-0 z-50 flex flex-col h-full py-6 px-3 shadow-2xl" style="background:#001142;">
+  <div class="flex items-center justify-between gap-2 px-3 mb-8 flex-shrink-0">
+    <a th:href="@{/dashboard}" class="flex items-center gap-3 overflow-hidden min-w-0">
+      <img src="/images/logo.png" alt="Jejak Ilmu" class="sb-logo-img flex-shrink-0" style="height:52px;width:auto;"/>
+      <div class="sb-logo-text">
+        <h1 class="font-headline-md font-black text-white leading-none" style="font-size:15px;">Jejak Ilmu</h1>
+        <p class="text-[9px] uppercase tracking-widest text-blue-200/60 font-bold mt-0.5">Platform Mentoring Akademik</p>
+      </div>
+    </a>
+    <button onclick="toggleSidebar()" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 text-white/60 hover:text-white transition-all flex-shrink-0">
+      <span class="material-symbols-outlined text-[20px]" id="sb-toggle-icon">chevron_left</span>
+    </button>
+  </div>
+  <div class="space-y-0.5 flex-1 overflow-hidden">
+    <a th:href="@{/dashboard}" class="sb-item text-blue-100/70 hover:text-white hover:bg-white/5" data-tip="Beranda">
+      <span class="material-symbols-outlined flex-shrink-0">dashboard</span>
+      <span class="sb-label font-label-sm text-label-sm">Beranda</span>
+    </a>
+    <a th:href="@{/dashboard/mentorship}" class="sb-item text-blue-100/70 hover:text-white hover:bg-white/5" data-tip="Mentorship">
+      <span class="material-symbols-outlined flex-shrink-0">groups</span>
+      <span class="sb-label font-label-sm text-label-sm">Mentorship</span>
+    </a>
+    <a th:href="@{/dashboard/pesan}" class="sb-item text-blue-100/70 hover:text-white hover:bg-white/5" data-tip="Pesan">
+      <span class="material-symbols-outlined flex-shrink-0">mail</span>
+      <span class="sb-label font-label-sm text-label-sm">Pesan</span>
+    </a>
+    <a th:href="@{/dashboard/materi}" class="sb-item text-blue-100/70 hover:text-white hover:bg-white/5" data-tip="Materi">
+      <span class="material-symbols-outlined flex-shrink-0">school</span>
+      <span class="sb-label font-label-sm text-label-sm">Materi</span>
+    </a>
+    <!-- ACTIVE: Sumber Daya -->
+    <a th:href="@{/dashboard/sumber-daya}" class="sb-item text-white bg-white/10 border border-white/30 shadow-[0_0_20px_rgba(255,255,255,0.1)]" data-tip="Sumber Daya">
+      <span class="material-symbols-outlined flex-shrink-0" style="font-variation-settings:'FILL' 1;">library_books</span>
+      <span class="sb-label font-label-sm text-label-sm">Sumber Daya</span>
+    </a>
+    <a th:href="@{/dashboard/pengaturan}" class="sb-item text-blue-100/70 hover:text-white hover:bg-white/5" data-tip="Pengaturan">
+      <span class="material-symbols-outlined flex-shrink-0">settings</span>
+      <span class="sb-label font-label-sm text-label-sm">Pengaturan</span>
+    </a>
+  </div>
+  <div class="pt-4 border-t border-white/10 space-y-0.5 flex-shrink-0">
+    <a th:href="@{/dashboard/bantuan}" class="sb-item text-blue-100/70 hover:text-white hover:bg-white/5" data-tip="Bantuan">
+      <span class="material-symbols-outlined flex-shrink-0">help</span>
+      <span class="sb-label font-label-sm text-label-sm">Bantuan</span>
+    </a>
+    <a th:href="@{/logout}" class="sb-item text-red-400 hover:text-red-300" data-tip="Keluar">
+      <span class="material-symbols-outlined flex-shrink-0">logout</span>
+      <span class="sb-label font-label-sm text-label-sm">Keluar</span>
+    </a>
+  </div>
+</nav>
+
+<!-- ==================== TOPBAR ==================== -->
+<header id="mainTopbar" class="fixed top-0 right-0 h-[72px] z-40 bg-white/60 backdrop-blur-lg border-b border-white/40 shadow-sm flex items-center gap-4 px-margin-desktop">
+  <div class="flex-1 flex items-center px-4 py-2 rounded-full bg-surface-container min-w-0">
+    <span class="material-symbols-outlined text-on-surface-variant mr-3 flex-shrink-0">search</span>
+    <input class="bg-transparent border-none focus:ring-0 text-body-md w-full outline-none min-w-0" placeholder="Cari dokumen, template, atau referensi..." type="text"/>
+  </div>
+  <div class="flex items-center gap-3 flex-shrink-0">
+    <div class="relative">
+      <button onclick="togglePopup('notifPopup',event)" class="w-10 h-10 rounded-full hover:bg-surface-container-high/50 flex items-center justify-center transition-colors relative">
+        <span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+        <span th:if="${notifBelumDibaca > 0}" class="absolute -top-0.5 -right-0.5 w-4 h-4 bg-error text-white text-[9px] font-black rounded-full flex items-center justify-center" th:text="${notifBelumDibaca > 9 ? '9+' : notifBelumDibaca}">0</span>
+      </button>
+      <div id="notifPopup" class="popup-panel hidden absolute top-12 right-0 w-[340px] bg-white rounded-2xl shadow-2xl border border-outline-variant/30 z-[999] overflow-hidden">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-surface-container-high"><h3 class="font-bold text-[15px] text-primary">Notifikasi</h3><button class="text-primary text-[11px] font-black hover:underline uppercase tracking-wider">Tandai Semua Dibaca</button></div>
+        <div class="max-h-[360px] overflow-y-auto divide-y divide-surface-container-high">
+          <!-- INBOX DINAMIS -->
+          <div th:if="${inboxPercakapan == null or #lists.isEmpty(inboxPercakapan)}" class="px-5 py-8 text-center text-on-surface-variant text-[13px]">Belum ada percakapan</div>
+          <div th:each="conv : ${inboxPercakapan}" class="px-5 py-4 flex gap-3 hover:bg-surface-container-low cursor-pointer transition-colors" th:onclick="|window.location.href='@{/dashboard/pesan}'|">
+            <div class="w-9 h-9 rounded-full bg-[#001142] flex items-center justify-center text-white font-black text-xs flex-shrink-0" th:text="${#strings.substring(conv['partner'].namaLengkap,0,2).toUpperCase()}">??</div>
+            <div class="min-w-0"><p class="text-[13px] font-bold truncate" th:text="${conv['partner'].namaLengkap}">-</p><p class="text-[12px] text-on-surface-variant mt-0.5 line-clamp-2" th:text="${'Topik: ' + conv['topik']}">-</p></div>
+          </div>
+        </div>
+        <div class="px-5 py-3 border-t border-surface-container-high bg-surface-container-low/50"><button class="w-full text-center text-primary font-black text-[11px] uppercase tracking-wider hover:underline py-1">Lihat Semua Notifikasi</button></div>
+      </div>
+    </div>
+    <div class="relative">
+      <button onclick="togglePopup('inboxPopup',event)" class="w-10 h-10 rounded-full hover:bg-surface-container-high/50 flex items-center justify-center transition-colors"><span class="material-symbols-outlined text-on-surface-variant">mail</span></button>
+      <div id="inboxPopup" class="popup-panel hidden absolute top-12 right-0 w-[340px] bg-white rounded-2xl shadow-2xl border border-outline-variant/30 z-[999] overflow-hidden">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-surface-container-high"><h3 class="font-bold text-[15px] text-primary">Kotak Masuk</h3><button class="text-primary text-[11px] font-black hover:underline uppercase tracking-wider">Tandai Semua Dibaca</button></div>
+        <div class="max-h-[360px] overflow-y-auto divide-y divide-surface-container-high">
+          <!-- INBOX DINAMIS -->
+          <div th:if="${inboxPercakapan == null or #lists.isEmpty(inboxPercakapan)}" class="px-5 py-8 text-center text-on-surface-variant text-[13px]">Belum ada percakapan</div>
+          <div th:each="conv : ${inboxPercakapan}" class="px-5 py-4 flex gap-3 hover:bg-surface-container-low cursor-pointer transition-colors" th:onclick="|window.location.href='@{/dashboard/pesan}'|">
+            <div class="w-9 h-9 rounded-full bg-[#001142] flex items-center justify-center text-white font-black text-xs flex-shrink-0" th:text="${#strings.substring(conv['partner'].namaLengkap,0,2).toUpperCase()}">??</div>
+            <div class="min-w-0"><p class="text-[13px] font-bold truncate" th:text="${conv['partner'].namaLengkap}">-</p><p class="text-[12px] text-on-surface-variant mt-0.5 line-clamp-2" th:text="${'Topik: ' + conv['topik']}">-</p></div>
+          </div>
+        </div>
+        <div class="px-5 py-3 border-t border-surface-container-high bg-surface-container-low/50"><button class="w-full text-center text-primary font-black text-[11px] uppercase tracking-wider hover:underline py-1">Lihat Semua Pesan</button></div>
+      </div>
+    </div>
+    <div class="h-8 w-[1px] bg-outline-variant"></div>
+    <div class="flex items-center gap-3 cursor-pointer">
+      <div class="text-right"><p class="font-label-sm text-label-sm text-primary" th:text="${mentor.namaLengkap}">Mentor</p><p class="text-[10px] text-on-surface-variant font-bold uppercase tracking-tighter" th:text="${mentor.asdos ? 'Asisten Dosen' : (mentor.kandidatAsdos ? 'Kandidat Asdos' : 'Senior Mentor')}">Senior Mentor</p></div>
+      <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary-fixed-dim flex-shrink-0"><img th:if="${mentor.fotoProfil != null}" th:src="${mentor.fotoProfil}" class="w-full h-full object-cover" alt="foto"/><div th:unless="${mentor.fotoProfil != null}" class="w-full h-full bg-[#001142] flex items-center justify-center text-white font-black text-sm" th:text="${#strings.substring(mentor.namaLengkap, 0, 2).toUpperCase()}">ME</div></div>
+    </div>
+  </div>
+</header>
+
+<!-- ==================== MAIN CONTENT ==================== -->
+<main id="mainContent" class="pt-[72px] min-h-screen flex flex-col">
+<div class="px-margin-desktop py-10 max-w-container-max w-full mx-auto flex-1">
+
+  <!-- Header Section -->
+  <div class="flex flex-col md:flex-row md:items-end justify-between mb-10 gap-6">
+    <div>
+      <span class="font-caption-xs text-caption-xs text-on-primary-fixed-variant mb-2 block">REPOSITORY</span>
+      <h2 class="font-display-lg text-display-lg text-primary tracking-tight">Resources</h2>
+      <p class="font-body-lg text-body-lg text-on-surface-variant max-w-xl mt-2">Akses repositori dokumen akademik, panduan mentorship, dan template eksklusif untuk mendukung kesuksesan mahasiswa Anda.</p>
+    </div>
+    <div class="flex gap-3">
+      <button class="flex items-center gap-2 px-6 py-3 bg-white border border-outline-variant/50 rounded-xl font-label-sm text-label-sm text-primary shadow-sm hover:shadow-md transition-all active:scale-95">
+        <span class="material-symbols-outlined">filter_list</span>
+        Filter
+      </button>
+      <button onclick="document.getElementById('modalUnggahSD').classList.remove('hidden')"
+              class="flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-xl font-label-sm text-label-sm font-black tracking-widest active:scale-95 transition-all shadow-lg hover:shadow-xl">
+        <span class="material-symbols-outlined">upload</span>
+        UNGGAH BARU
+      </button>
+    </div>
+  </div>
+
+  <!-- Alert Sukses/Error -->
+  <div th:if="${sukses}" class="mb-6 flex items-center gap-3 rounded-xl border border-success-green bg-success-green/10 px-4 py-3">
+    <span class="material-symbols-outlined text-success-green text-[20px]" style="font-variation-settings:'FILL' 1;">check_circle</span>
+    <p class="text-success-green font-bold text-sm" th:text="${sukses}"></p>
+  </div>
+  <div th:if="${error}" class="mb-6 flex items-center gap-3 rounded-xl border border-error bg-error-container px-4 py-3">
+    <span class="material-symbols-outlined text-on-error-container text-[20px]">error</span>
+    <p class="text-on-error-container font-bold text-sm" th:text="${error}"></p>
+  </div>
+
+  <!-- Category Tabs -->
+  <div class="flex gap-8 mb-8 border-b border-outline-variant/30 overflow-x-auto pb-px" id="tabBar">
+    <button class="tab-btn active pb-4 border-b-2 border-primary text-primary font-bold font-body-md text-body-md whitespace-nowrap"
+            onclick="setTab(this, 'semua')">Semua</button>
+    <button class="tab-btn pb-4 border-b-2 border-transparent text-on-surface-variant font-medium font-body-md text-body-md hover:text-primary whitespace-nowrap transition-all"
+            onclick="setTab(this, 'dokumen')">Dokumen</button>
+    <button class="tab-btn pb-4 border-b-2 border-transparent text-on-surface-variant font-medium font-body-md text-body-md hover:text-primary whitespace-nowrap transition-all"
+            onclick="setTab(this, 'template')">Template</button>
+    <button class="tab-btn pb-4 border-b-2 border-transparent text-on-surface-variant font-medium font-body-md text-body-md hover:text-primary whitespace-nowrap transition-all"
+            onclick="setTab(this, 'referensi')">Referensi Link</button>
+    <button class="tab-btn pb-4 border-b-2 border-transparent text-on-surface-variant font-medium font-body-md text-body-md hover:text-primary whitespace-nowrap transition-all"
+            onclick="setTab(this, 'arsip')">Arsip Mentor</button>
+  </div>
+
+  <!-- Resource Cards Grid - DYNAMIC -->
+  <div th:if="${not #lists.isEmpty(daftarSumberDaya)}"
+       class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-gutter" id="resourceGrid">
+
+    <div th:each="sd : ${daftarSumberDaya}"
+         th:classappend="${sd.jenisMateri == 'TEMPLATE' ? 'border-success-green' :
+                          (sd.jenisMateri == 'TAUTAN' ? 'border-warning-gold' : 'border-primary')}"
+         class="premium-card bg-white p-7 rounded-2xl shadow-sm flex flex-col justify-between h-full group"
+         th:attr="data-jenis=${sd.jenisMateri}">
+
+      <div>
+        <div class="flex justify-between items-start mb-6">
+          <!-- Icon -->
+          <div th:class="${'w-11 h-11 rounded-xl flex items-center justify-center ' +
+                           (sd.jenisMateri == 'TEMPLATE' ? 'bg-success-green/10 text-success-green' :
+                           (sd.jenisMateri == 'TAUTAN' ? 'bg-warning-gold/10 text-warning-gold' :
+                           (sd.jenisMateri == 'PANDUAN' ? 'bg-primary/10 text-primary' : 'bg-primary/10 text-primary')))}">
+            <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;"
+                  th:text="${sd.jenisMateri == 'TAUTAN' ? 'link' :
+                            (sd.jenisMateri == 'TEMPLATE' ? 'article' :
+                            (sd.jenisMateri == 'PANDUAN' ? 'menu_book' : 'description'))}">description</span>
+          </div>
+          <!-- Badge -->
+          <span th:class="${'font-bold text-[10px] px-2 py-1 rounded uppercase tracking-wider ' +
+                            (sd.jenisMateri == 'TEMPLATE' ? 'bg-success-green/10 text-success-green' :
+                            (sd.jenisMateri == 'TAUTAN' ? 'bg-warning-gold/10 text-warning-gold' : 'bg-primary/10 text-primary'))}"
+                th:text="${sd.jenisMateri != null ? sd.jenisMateri : 'DOKUMEN'}">DOKUMEN</span>
+        </div>
+        <h3 class="font-headline-md text-[18px] text-primary mb-2 line-clamp-2"
+            th:text="${sd.judul}">Judul</h3>
+        <p class="font-body-md text-body-md text-on-surface-variant mb-4 line-clamp-3"
+           th:text="${sd.deskripsi != null and !sd.deskripsi.isEmpty() ? sd.deskripsi : 'Tidak ada deskripsi.'}">Deskripsi</p>
+      </div>
+
+      <div class="flex items-center justify-between mt-auto pt-4 border-t border-surface-container-high">
+        <!-- Meta info -->
+        <div class="flex flex-col gap-0.5">
+          <span class="text-on-surface-variant/60 font-label-sm text-[11px]"
+                th:if="${sd.tanggalUnggah != null}"
+                th:text="${#temporals.format(sd.tanggalUnggah, 'd MMM yyyy')}">-</span>
+          <span class="text-on-surface-variant/60 font-label-sm text-[11px]"
+                th:if="${sd.namaFile != null}"
+                th:text="${sd.namaFile}">-</span>
+          <span class="text-on-surface-variant/60 font-label-sm text-[11px]"
+                th:if="${sd.ukuranFile != null and sd.ukuranFile > 0}"
+                th:text="${#numbers.formatDecimal(sd.ukuranFile / 1048576.0, 1, 'COMMA', 1, 'POINT') + ' MB'}">-</span>
+          <span class="text-on-surface-variant/60 font-label-sm text-[11px]"
+                th:if="${sd.tautanMateri != null and (sd.tautanMateri.startsWith('http://') or sd.tautanMateri.startsWith('https://'))}"
+                th:text="${'External Link · ' + sd.jumlahUnduhan + ' Klik'}">External Link</span>
+        </div>
+        <!-- Actions -->
+        <div class="flex items-center gap-1">
+          <!-- Edit -->
+          <button type="button"
+                  th:onclick="'bukaEditSD(' + ${sd.id} + ', \'' + ${#strings.escapeJavaScript(sd.judul)} + '\', \'' + ${#strings.escapeJavaScript(sd.deskripsi ?: '')} + '\', \'' + (${sd.jenisMateri} ?: 'DOKUMEN') + '\', \'' + ${#strings.escapeJavaScript(sd.tautanMateri ?: '')} + '\')'"
+                  class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center hover:bg-primary/10 transition-colors" title="Edit">
+            <span class="material-symbols-outlined text-on-surface-variant text-[16px]">edit</span>
+          </button>
+          <!-- Hapus -->
+          <button type="button"
+                  th:onclick="'konfirmasiHapusSD(' + ${sd.id} + ', \'' + ${#strings.escapeJavaScript(sd.judul)} + '\')'"
+                  class="w-8 h-8 rounded-lg bg-error-container flex items-center justify-center hover:bg-red-200 transition-colors" title="Hapus">
+            <span class="material-symbols-outlined text-error text-[16px]">delete</span>
+          </button>
+          <!-- Download (file lokal) -->
+          <a th:if="${sd.tautanMateri != null and sd.tautanMateri.startsWith('/uploads/')}"
+             th:href="${sd.tautanMateri}" download
+             class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center hover:bg-primary/10 text-primary transition-colors" title="Unduh">
+            <span class="material-symbols-outlined text-[16px]">download</span>
+          </a>
+          <!-- Buka link eksternal -->
+          <a th:if="${sd.tautanMateri != null and (sd.tautanMateri.startsWith('http://') or sd.tautanMateri.startsWith('https://'))}"
+             th:href="${sd.tautanMateri}" target="_blank" rel="noopener"
+             class="w-8 h-8 rounded-lg bg-surface-container flex items-center justify-center hover:bg-warning-gold/10 text-warning-gold transition-colors" title="Buka Tautan">
+            <span class="material-symbols-outlined text-[16px]">open_in_new</span>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tambah baru (dashed card) -->
+    <button onclick="document.getElementById('modalUnggahSD').classList.remove('hidden')"
+            class="border-2 border-dashed border-outline-variant rounded-2xl min-h-[280px] flex flex-col items-center justify-center gap-3 text-on-surface-variant hover:border-primary hover:text-primary hover:bg-primary/5 transition-all group">
+      <div class="w-14 h-14 rounded-2xl bg-surface-container-high flex items-center justify-center group-hover:bg-primary/10 transition-colors">
+        <span class="material-symbols-outlined text-[28px]">add</span>
+      </div>
+      <p class="font-bold text-[14px]">Tambah Sumber Daya</p>
+      <p class="text-[12px] text-center max-w-[160px] leading-relaxed">Unggah dokumen, template, atau tautan referensi</p>
+    </button>
+  </div>
+
+  <!-- Empty State -->
+  <div th:if="${#lists.isEmpty(daftarSumberDaya)}"
+       class="flex flex-col items-center justify-center py-20 gap-5">
+    <div class="w-20 h-20 rounded-2xl bg-surface-container-high flex items-center justify-center">
+      <span class="material-symbols-outlined text-on-surface-variant text-[40px]" style="font-variation-settings:'FILL' 1;">library_books</span>
+    </div>
+    <div class="text-center">
+      <h3 class="font-bold text-primary text-[18px] mb-2">Belum Ada Sumber Daya</h3>
+      <p class="text-on-surface-variant text-[14px] max-w-sm leading-relaxed">Mulai tambahkan dokumen, template, atau tautan referensi untuk mentee Anda.</p>
+    </div>
+    <button onclick="document.getElementById('modalUnggahSD').classList.remove('hidden')"
+            class="bg-primary text-white px-6 py-3 rounded-xl font-bold flex items-center gap-2 hover:bg-primary/90 transition-all active:scale-95">
+      <span class="material-symbols-outlined">upload</span>
+      Unggah Sumber Daya Pertama
+    </button>
+  </div>
+
+</div>
+
+</main>
+
+<script>
+  function setTab(btn, type) {
+    document.querySelectorAll('.tab-btn').forEach(t => {
+      t.classList.remove('active', 'border-primary', 'text-primary', 'font-bold');
+      t.classList.add('border-transparent', 'text-on-surface-variant', 'font-medium');
+    });
+    btn.classList.add('active', 'border-primary', 'text-primary', 'font-bold');
+    btn.classList.remove('border-transparent', 'text-on-surface-variant', 'font-medium');
+
+    document.querySelectorAll('#resourceGrid > [data-jenis]').forEach(card => {
+      const jenis = (card.dataset.jenis || '').toUpperCase();
+      let match = false;
+      if (type === 'semua') match = true;
+      else if (type === 'dokumen') match = (jenis === 'DOKUMEN' || jenis === 'PANDUAN');
+      else if (type === 'template') match = (jenis === 'TEMPLATE');
+      else if (type === 'referensi') match = (jenis === 'TAUTAN');
+      else if (type === 'arsip') match = (jenis === 'SUMBER_DAYA');
+      card.style.display = match ? '' : 'none';
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.premium-card').forEach(card => {
+      const iconEl = card.querySelector('.w-11 .material-symbols-outlined');
+      card.addEventListener('mouseenter', () => {
+        if (iconEl) { iconEl.style.transition = 'transform 0.3s ease'; iconEl.style.transform = 'scale(1.1) rotate(-5deg)'; }
+      });
+      card.addEventListener('mouseleave', () => {
+        if (iconEl) iconEl.style.transform = 'scale(1) rotate(0deg)';
+      });
+    });
+  });
+</script>
+
+<script>
+function toggleSidebar() {
+  document.body.classList.toggle('sb-collapsed');
+  const icon = document.getElementById('sb-toggle-icon');
+  if (icon) icon.textContent = document.body.classList.contains('sb-collapsed') ? 'chevron_right' : 'chevron_left';
+  try { localStorage.setItem('sb-collapsed', document.body.classList.contains('sb-collapsed')); } catch(e) {}
+}
+document.addEventListener('DOMContentLoaded', function() {
+  try {
+    if (localStorage.getItem('sb-collapsed') === 'true') {
+      document.body.classList.add('sb-collapsed');
+      const icon = document.getElementById('sb-toggle-icon');
+      if (icon) icon.textContent = 'chevron_right';
+    }
+  } catch(e) {}
+  document.addEventListener('click', function(e) {
+    const popups = document.querySelectorAll('.popup-panel');
+    popups.forEach(p => { if (!p.contains(e.target) && !e.target.closest('[onclick*="togglePopup"]')) p.classList.add('hidden'); });
+  });
+});
+function togglePopup(id, event) {
+  if (event) event.stopPropagation();
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle('hidden');
+}
+</script>
+
+<!-- ==================== MODAL UNGGAH SUMBER DAYA ==================== -->
+<div id="modalUnggahSD" class="hidden fixed inset-0 z-[9999] flex items-center justify-center p-4"
+     style="background:rgba(0,0,0,0.5);">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+    <div class="flex items-center justify-between p-6 border-b border-outline-variant">
+      <h3 class="font-headline-md text-headline-md text-primary">Unggah Sumber Daya Baru</h3>
+      <button onclick="document.getElementById('modalUnggahSD').classList.add('hidden')"
+              class="w-8 h-8 rounded-full hover:bg-surface-container flex items-center justify-center text-on-surface-variant">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <form th:action="@{/profil/sumber-daya/unggah}" method="post" enctype="multipart/form-data" class="p-6 space-y-5">
+      <div>
+        <label class="block text-[11px] font-black uppercase tracking-wider text-on-surface-variant mb-2">Judul *</label>
+        <input name="judul" required type="text" placeholder="misal: Template Laporan Mentoring"
+               class="w-full px-4 py-3 rounded-xl border border-outline-variant bg-surface-container-low focus:border-primary outline-none text-sm"/>
+      </div>
+      <div>
+        <label class="block text-[11px] font-black uppercase tracking-wider text-on-surface-variant mb-2">Kategori</label>
+        <select name="kategori" class="w-full px-4 py-3 rounded-xl border border-outline-variant bg-surface-container-low focus:border-primary outline-none text-sm appearance-none">
+          <option value="TEMPLATE">Template</option>
+          <option value="PANDUAN">Panduan</option>
+          <option value="DOKUMEN">Dokumen</option>
+          <option value="TAUTAN">Tautan / Referensi Link</option>
+          <option value="SUMBER_DAYA">Arsip Mentor</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-[11px] font-black uppercase tracking-wider text-on-surface-variant mb-2">Deskripsi</label>
+        <textarea name="deskripsi" rows="3" placeholder="Jelaskan isi sumber daya ini..."
+                  class="w-full px-4 py-3 rounded-xl border border-outline-variant bg-surface-container-low focus:border-primary outline-none text-sm resize-none"></textarea>
+      </div>
+      <div>
+        <label class="block text-[11px] font-black uppercase tracking-wider text-on-surface-variant mb-2">Unggah File</label>
+        <input name="fileSumberDaya" type="file"
+               class="w-full text-sm text-on-surface-variant file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-bold file:bg-primary file:text-white hover:file:bg-primary/90"/>
+      </div>
+      <div>
+        <label class="block text-[11px] font-black uppercase tracking-wider text-on-surface-variant mb-2">Atau Tautan URL</label>
+        <input name="tautan" type="url" placeholder="https://docs.google.com/..."
+               class="w-full px-4 py-3 rounded-xl border border-outline-variant bg-surface-container-low focus:border-primary outline-none text-sm"/>
+      </div>
+      <div class="flex gap-3 pt-2">
+        <button type="button" onclick="document.getElementById('modalUnggahSD').classList.add('hidden')"
+                class="flex-1 px-4 py-3 border border-outline-variant rounded-xl font-bold text-sm text-on-surface-variant hover:bg-surface-container transition-all">Batal</button>
+        <button type="submit"
+                class="flex-1 px-4 py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary/90 transition-all flex items-center justify-center gap-2">
+          <span class="material-symbols-outlined text-[18px]">upload</span>Unggah
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ==================== MODAL EDIT SUMBER DAYA ==================== -->
+<div id="modalEditSD" class="hidden fixed inset-0 z-[9999] flex items-center justify-center p-4"
+     style="background:rgba(0,0,0,0.5);">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+    <div class="flex items-center justify-between p-6 border-b border-outline-variant">
+      <h3 class="font-headline-md text-headline-md text-primary">Edit Sumber Daya</h3>
+      <button onclick="document.getElementById('modalEditSD').classList.add('hidden')"
+              class="w-8 h-8 rounded-full hover:bg-surface-container flex items-center justify-center text-on-surface-variant">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+    </div>
+    <form id="formEditSD" th:action="@{/profil/materi/0/edit}" method="post" enctype="multipart/form-data" class="p-6 space-y-5">
+      <div>
+        <label class="block text-[11px] font-black uppercase tracking-wider text-on-surface-variant mb-2">Judul *</label>
+        <input id="sdEditJudul" name="judul" required type="text"
+               class="w-full px-4 py-3 rounded-xl border border-outline-variant bg-surface-container-low focus:border-primary outline-none text-sm"/>
+      </div>
+      <div>
+        <label class="block text-[11px] font-black uppercase tracking-wider text-on-surface-variant mb-2">Kategori</label>
+        <select id="sdEditJenis" name="jenisMateri"
+                class="w-full px-4 py-3 rounded-xl border border-outline-variant bg-surface-container-low focus:border-primary outline-none text-sm appearance-none">
+          <option value="TEMPLATE">Template</option>
+          <option value="PANDUAN">Panduan</option>
+          <option value="DOKUMEN">Dokumen</option>
+          <option value="TAUTAN">Tautan / Referensi Link</option>
+          <option value="SUMBER_DAYA">Arsip Mentor</option>
+        </select>
+      </div>
+      <div>
+        <label class="block text-[11px] font-black uppercase tracking-wider text-on-surface-variant mb-2">Deskripsi</label>
+        <textarea id="sdEditDeskripsi" name="deskripsi" rows="3"
+                  class="w-full px-4 py-3 rounded-xl border border-outline-variant bg-surface-container-low focus:border-primary outline-none text-sm resize-none"></textarea>
+      </div>
+      <div>
+        <label class="block text-[11px] font-black uppercase tracking-wider text-on-surface-variant mb-2">Tautan / Link saat ini</label>
+        <input id="sdEditTautan" type="text" readonly
+               class="w-full px-4 py-3 rounded-xl border border-outline-variant bg-surface-container text-on-surface-variant text-sm outline-none cursor-default"/>
+        <p class="text-[11px] text-on-surface-variant mt-1">Untuk mengganti file, gunakan tombol hapus lalu unggah ulang.</p>
+      </div>
+      <div class="flex gap-3 pt-2">
+        <button type="button" onclick="document.getElementById('modalEditSD').classList.add('hidden')"
+                class="flex-1 px-4 py-3 border border-outline-variant rounded-xl font-bold text-sm text-on-surface-variant hover:bg-surface-container transition-all">
+          Batal
+        </button>
+        <button type="submit"
+                class="flex-1 px-4 py-3 bg-primary text-white rounded-xl font-bold text-sm hover:bg-primary/90 transition-all flex items-center justify-center gap-2">
+          <span class="material-symbols-outlined text-[18px]">save</span>
+          Simpan Perubahan
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ==================== MODAL KONFIRMASI HAPUS SUMBER DAYA ==================== -->
+<div id="modalHapusSD" class="hidden fixed inset-0 z-[9999] flex items-center justify-center p-4"
+     style="background:rgba(0,0,0,0.5);">
+  <div class="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6">
+    <div class="flex flex-col items-center text-center gap-4 mb-6">
+      <div class="w-16 h-16 rounded-full bg-error-container flex items-center justify-center">
+        <span class="material-symbols-outlined text-error text-[32px]" style="font-variation-settings:'FILL' 1;">delete_forever</span>
+      </div>
+      <div>
+        <h3 class="font-bold text-primary text-[18px] mb-1">Hapus Sumber Daya?</h3>
+        <p class="text-on-surface-variant text-[14px] leading-relaxed">
+          "<span id="hapusSDJudul" class="font-bold text-primary"></span>" akan dihapus secara permanen dan tidak dapat dikembalikan.
+        </p>
+      </div>
+    </div>
+    <form id="formHapusSD" th:action="@{/profil/materi/0/hapus-sd}" method="post">
+      <div class="flex gap-3">
+        <button type="button" onclick="document.getElementById('modalHapusSD').classList.add('hidden')"
+                class="flex-1 px-4 py-3 border border-outline-variant rounded-xl font-bold text-sm text-on-surface-variant hover:bg-surface-container transition-all">
+          Batal
+        </button>
+        <button type="submit"
+                class="flex-1 px-4 py-3 bg-error text-white rounded-xl font-bold text-sm hover:bg-red-700 transition-all flex items-center justify-center gap-2">
+          <span class="material-symbols-outlined text-[18px]">delete</span>
+          Ya, Hapus
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+function bukaEditSD(id, judul, deskripsi, jenis, tautan) {
+  document.getElementById('sdEditJudul').value    = judul;
+  document.getElementById('sdEditDeskripsi').value = deskripsi;
+  document.getElementById('sdEditTautan').value   = tautan || '-';
+  const jenisEl = document.getElementById('sdEditJenis');
+  if (jenis) jenisEl.value = jenis;
+  document.getElementById('formEditSD').action = '/profil/materi/' + id + '/edit';
+  document.getElementById('modalEditSD').classList.remove('hidden');
+}
+
+function konfirmasiHapusSD(id, judul) {
+  document.getElementById('hapusSDJudul').textContent = judul;
+  document.getElementById('formHapusSD').action = '/profil/materi/' + id + '/hapus-sd';
+  document.getElementById('modalHapusSD').classList.remove('hidden');
+}
+</script>
+</body>
+</html>
+
