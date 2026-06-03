@@ -1,0 +1,421 @@
+﻿<!DOCTYPE html>
+<html lang="id" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Bantuan | Jejak Ilmu - Platform Mentoring Akademik</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+tailwind.config = {
+  darkMode: "class",
+  theme: {
+    extend: {
+      colors: {
+        "outline-variant": "#c6c6d0",
+        "surface-variant": "#e1e3e4",
+        "secondary-container": "#fdb965",
+        "primary-fixed-dim": "#b6c4fe",
+        "glass-border": "rgba(255,255,255,0.4)",
+        "error": "#ba1a1a",
+        "surface-container-low": "#f3f4f5",
+        "surface-container-highest": "#e1e3e4",
+        "on-secondary-container": "#754900",
+        "inverse-on-surface": "#f0f1f2",
+        "success-green": "#10b981",
+        "surface-dim": "#d9dadb",
+        "on-error-container": "#93000a",
+        "warning-gold": "#fea619",
+        "surface-container-high": "#e7e8e9",
+        "error-crimson": "#ba1a1a",
+        "surface-container": "#edeeef",
+        "error-container": "#ffdad6",
+        "on-primary-fixed": "#061748",
+        "on-background": "#191c1d",
+        "on-primary": "#ffffff",
+        "surface": "#f8f9fa",
+        "outline": "#767680",
+        "primary": "#000000",
+        "background": "#f8f9fa",
+        "on-surface-variant": "#45464f",
+        "primary-container": "#061748",
+        "on-primary-container": "#7382b7",
+        "primary-fixed": "#dce1ff",
+        "on-primary-fixed-variant": "#364475",
+        "on-surface": "#191c1d",
+        "surface-container-lowest": "#ffffff"
+      },
+      spacing: {
+        "margin-mobile": "16px",
+        "topbar-height": "72px",
+        "base": "8px",
+        "margin-desktop": "32px",
+        "container-max": "1280px",
+        "sidebar-width": "280px",
+        "gutter": "24px"
+      },
+      fontFamily: {
+        "headline-md": ["Inter"],
+        "body-lg": ["Inter"],
+        "body-md": ["Inter"],
+        "label-sm": ["Inter"],
+        "caption-xs": ["Inter"],
+        "display-lg": ["Inter"]
+      },
+      fontSize: {
+        "headline-md": ["24px", {"lineHeight": "1.3", "letterSpacing": "-0.01em", "fontWeight": "900"}],
+        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "500"}],
+        "body-md": ["14px", {"lineHeight": "1.5", "fontWeight": "400"}],
+        "label-sm": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "800"}],
+        "caption-xs": ["10px", {"lineHeight": "1", "letterSpacing": "0.2em", "fontWeight": "900"}],
+        "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "900"}]
+      }
+    }
+  }
+}
+</script>
+<style>
+  body { font-family: 'Inter', sans-serif; background-color: #f8f9fa; }
+  .faq-content { max-height: 0; overflow: hidden; opacity: 0; transition: max-height 0.35s ease, opacity 0.25s ease; }
+  .faq-content.open { opacity: 1; }
+  /* ===== COLLAPSIBLE SIDEBAR ===== */
+  #mainSidebar { width:280px; transition:width 0.3s cubic-bezier(0.4,0,0.2,1); overflow:hidden; }
+  body.sb-collapsed #mainSidebar { width:64px; }
+  #mainTopbar { left:280px; transition:left 0.3s cubic-bezier(0.4,0,0.2,1); }
+  body.sb-collapsed #mainTopbar { left:64px; }
+  #mainContent { margin-left:280px; transition:margin-left 0.3s cubic-bezier(0.4,0,0.2,1); }
+  body.sb-collapsed #mainContent { margin-left:64px; }
+  .sb-label { white-space:nowrap; overflow:hidden; transition:opacity 0.2s,max-width 0.25s cubic-bezier(0.4,0,0.2,1); max-width:200px; }
+  body.sb-collapsed .sb-label { opacity:0; max-width:0; }
+  .sb-logo-text { overflow:hidden; transition:opacity 0.2s,max-width 0.25s cubic-bezier(0.4,0,0.2,1); max-width:180px; white-space:nowrap; }
+  body.sb-collapsed .sb-logo-text { opacity:0; max-width:0; }
+  .sb-logo-img { transition:height 0.3s; }
+  body.sb-collapsed .sb-logo-img { height:36px !important; }
+  .sb-item { display:flex; align-items:center; gap:16px; padding:12px 16px; border-radius:8px; transition:all 0.2s; text-decoration:none; white-space:nowrap; position:relative; }
+  body.sb-collapsed .sb-item { justify-content:center; gap:0; padding:12px 8px; }
+  body.sb-collapsed .sb-item[data-tip]::after { content:attr(data-tip); position:absolute; left:calc(100% + 10px); top:50%; transform:translateY(-50%); background:#001142; color:white; padding:5px 10px; border-radius:8px; font-size:11px; font-weight:800; white-space:nowrap; opacity:0; pointer-events:none; transition:opacity 0.15s; z-index:1000; border:1px solid rgba(255,255,255,0.15); letter-spacing:0.05em; text-transform:uppercase; }
+  body.sb-collapsed .sb-item[data-tip]:hover::after { opacity:1; }
+</style>
+</head>
+<body class="bg-background text-on-surface font-body-md overflow-x-hidden">
+
+<!-- ==================== SIDEBAR (Bantuan active) ==================== -->
+<nav id="mainSidebar" class="fixed left-0 top-0 bottom-0 z-50 flex flex-col h-full py-6 px-3 shadow-2xl" style="background:#001142;">
+  <div class="flex items-center justify-between gap-2 px-3 mb-8 flex-shrink-0">
+    <a th:href="@{/dashboard}" class="flex items-center gap-3 overflow-hidden min-w-0">
+      <img src="/images/logo.png" alt="Jejak Ilmu" class="sb-logo-img flex-shrink-0" style="height:52px;width:auto;"/>
+      <div class="sb-logo-text">
+        <h1 class="font-headline-md font-black text-white leading-none" style="font-size:15px;">Jejak Ilmu</h1>
+        <p class="text-[9px] uppercase tracking-widest text-blue-200/60 font-bold mt-0.5">Platform Mentoring Akademik</p>
+      </div>
+    </a>
+    <button onclick="toggleSidebar()" class="w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/10 text-white/60 hover:text-white transition-all flex-shrink-0">
+      <span class="material-symbols-outlined text-[20px]" id="sb-toggle-icon">chevron_left</span>
+    </button>
+  </div>
+  <div class="space-y-0.5 flex-1 overflow-hidden">
+    <a th:href="@{/dashboard}" class="sb-item text-blue-100/70 hover:text-white hover:bg-white/5" data-tip="Beranda">
+      <span class="material-symbols-outlined flex-shrink-0">dashboard</span>
+      <span class="sb-label font-label-sm text-label-sm">Beranda</span>
+    </a>
+    <a th:href="@{/dashboard/mentorship}" class="sb-item text-blue-100/70 hover:text-white hover:bg-white/5" data-tip="Mentorship">
+      <span class="material-symbols-outlined flex-shrink-0">groups</span>
+      <span class="sb-label font-label-sm text-label-sm">Mentorship</span>
+    </a>
+    <a th:href="@{/dashboard/pesan}" class="sb-item text-blue-100/70 hover:text-white hover:bg-white/5" data-tip="Pesan">
+      <span class="material-symbols-outlined flex-shrink-0">mail</span>
+      <span class="sb-label font-label-sm text-label-sm">Pesan</span>
+    </a>
+    <a th:href="@{/dashboard/materi}" class="sb-item text-blue-100/70 hover:text-white hover:bg-white/5" data-tip="Materi">
+      <span class="material-symbols-outlined flex-shrink-0">school</span>
+      <span class="sb-label font-label-sm text-label-sm">Materi</span>
+    </a>
+    <a th:href="@{/dashboard/sumber-daya}" class="sb-item text-blue-100/70 hover:text-white hover:bg-white/5" data-tip="Sumber Daya">
+      <span class="material-symbols-outlined flex-shrink-0">library_books</span>
+      <span class="sb-label font-label-sm text-label-sm">Sumber Daya</span>
+    </a>
+    <a th:href="@{/dashboard/pengaturan}" class="sb-item text-blue-100/70 hover:text-white hover:bg-white/5" data-tip="Pengaturan">
+      <span class="material-symbols-outlined flex-shrink-0">settings</span>
+      <span class="sb-label font-label-sm text-label-sm">Pengaturan</span>
+    </a>
+  </div>
+  <div class="pt-4 border-t border-white/10 space-y-0.5 flex-shrink-0">
+    <!-- ACTIVE: Bantuan -->
+    <a th:href="@{/dashboard/bantuan}" class="sb-item text-white bg-white/10 border border-white/30 shadow-[0_0_20px_rgba(255,255,255,0.1)]" data-tip="Bantuan">
+      <span class="material-symbols-outlined flex-shrink-0" style="font-variation-settings:'FILL' 1;">help</span>
+      <span class="sb-label font-label-sm text-label-sm">Bantuan</span>
+    </a>
+    <a th:href="@{/logout}" class="sb-item text-red-400 hover:text-red-300" data-tip="Keluar">
+      <span class="material-symbols-outlined flex-shrink-0">logout</span>
+      <span class="sb-label font-label-sm text-label-sm">Keluar</span>
+    </a>
+  </div>
+</nav>
+
+<!-- ==================== TOPBAR ==================== -->
+<header id="mainTopbar" class="fixed top-0 right-0 h-[72px] z-40 bg-white/60 backdrop-blur-lg border-b border-white/40 shadow-sm flex justify-between items-center px-margin-desktop">
+  <div class="flex-1 flex items-center px-4 py-2 rounded-full bg-surface-container min-w-0">
+    <span class="material-symbols-outlined text-on-surface-variant mr-3 flex-shrink-0">search</span>
+    <input class="bg-transparent border-none focus:ring-0 text-body-md w-full outline-none min-w-0" placeholder="Cari panduan atau pertanyaan..." type="text" id="searchInput"/>
+  </div>
+  <div class="flex items-center gap-3 flex-shrink-0">
+    <div class="relative">
+      <button onclick="togglePopup('notifPopup',event)" class="w-10 h-10 rounded-full hover:bg-surface-container-high/50 flex items-center justify-center transition-colors relative">
+        <span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+        <span th:if="${notifBelumDibaca > 0}" class="absolute -top-0.5 -right-0.5 w-4 h-4 bg-error text-white text-[9px] font-black rounded-full flex items-center justify-center" th:text="${notifBelumDibaca > 9 ? '9+' : notifBelumDibaca}">0</span>
+      </button>
+      <div id="notifPopup" class="popup-panel hidden absolute top-12 right-0 w-[340px] bg-white rounded-2xl shadow-2xl border border-outline-variant/30 z-[999] overflow-hidden">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-surface-container-high"><h3 class="font-bold text-[15px] text-primary">Notifikasi</h3><button class="text-primary text-[11px] font-black hover:underline uppercase tracking-wider">Tandai Semua Dibaca</button></div>
+        <div class="max-h-[360px] overflow-y-auto divide-y divide-surface-container-high">
+          <!-- INBOX DINAMIS -->
+          <div th:if="${inboxPercakapan == null or #lists.isEmpty(inboxPercakapan)}" class="px-5 py-8 text-center text-on-surface-variant text-[13px]">Belum ada percakapan</div>
+          <div th:each="conv : ${inboxPercakapan}" class="px-5 py-4 flex gap-3 hover:bg-surface-container-low cursor-pointer transition-colors" th:onclick="|window.location.href='@{/dashboard/pesan}'|">
+            <div class="w-9 h-9 rounded-full bg-[#001142] flex items-center justify-center text-white font-black text-xs flex-shrink-0" th:text="${#strings.substring(conv['partner'].namaLengkap,0,2).toUpperCase()}">??</div>
+            <div class="min-w-0"><p class="text-[13px] font-bold truncate" th:text="${conv['partner'].namaLengkap}">-</p><p class="text-[12px] text-on-surface-variant mt-0.5 line-clamp-2" th:text="${'Topik: ' + conv['topik']}">-</p></div>
+          </div>
+        </div>
+        <div class="px-5 py-3 border-t border-surface-container-high bg-surface-container-low/50"><button class="w-full text-center text-primary font-black text-[11px] uppercase tracking-wider hover:underline py-1">Lihat Semua Notifikasi</button></div>
+      </div>
+    </div>
+    <div class="relative">
+      <button onclick="togglePopup('inboxPopup',event)" class="w-10 h-10 rounded-full hover:bg-surface-container-high/50 flex items-center justify-center transition-colors"><span class="material-symbols-outlined text-on-surface-variant">mail</span></button>
+      <div id="inboxPopup" class="popup-panel hidden absolute top-12 right-0 w-[340px] bg-white rounded-2xl shadow-2xl border border-outline-variant/30 z-[999] overflow-hidden">
+        <div class="flex items-center justify-between px-5 py-4 border-b border-surface-container-high"><h3 class="font-bold text-[15px] text-primary">Kotak Masuk</h3><button class="text-primary text-[11px] font-black hover:underline uppercase tracking-wider">Tandai Semua Dibaca</button></div>
+        <div class="max-h-[360px] overflow-y-auto divide-y divide-surface-container-high">
+          <!-- INBOX DINAMIS -->
+          <div th:if="${inboxPercakapan == null or #lists.isEmpty(inboxPercakapan)}" class="px-5 py-8 text-center text-on-surface-variant text-[13px]">Belum ada percakapan</div>
+          <div th:each="conv : ${inboxPercakapan}" class="px-5 py-4 flex gap-3 hover:bg-surface-container-low cursor-pointer transition-colors" th:onclick="|window.location.href='@{/dashboard/pesan}'|">
+            <div class="w-9 h-9 rounded-full bg-[#001142] flex items-center justify-center text-white font-black text-xs flex-shrink-0" th:text="${#strings.substring(conv['partner'].namaLengkap,0,2).toUpperCase()}">??</div>
+            <div class="min-w-0"><p class="text-[13px] font-bold truncate" th:text="${conv['partner'].namaLengkap}">-</p><p class="text-[12px] text-on-surface-variant mt-0.5 line-clamp-2" th:text="${'Topik: ' + conv['topik']}">-</p></div>
+          </div>
+        </div>
+        <div class="px-5 py-3 border-t border-surface-container-high bg-surface-container-low/50"><button class="w-full text-center text-primary font-black text-[11px] uppercase tracking-wider hover:underline py-1">Lihat Semua Pesan</button></div>
+      </div>
+    </div>
+    <div class="h-8 w-[1px] bg-outline-variant"></div>
+    <div class="flex items-center gap-3 cursor-pointer">
+      <div class="text-right"><p class="font-label-sm text-label-sm text-primary" th:text="${mentor.namaLengkap}">Mentor</p><p class="text-[10px] text-on-surface-variant font-bold uppercase tracking-tighter" th:text="${mentor.asdos ? 'Asisten Dosen' : (mentor.kandidatAsdos ? 'Kandidat Asdos' : 'Senior Mentor')}">Senior Mentor</p></div>
+      <div class="w-10 h-10 rounded-full overflow-hidden border-2 border-primary-fixed-dim flex-shrink-0"><img th:if="${mentor.fotoProfil != null}" th:src="${mentor.fotoProfil}" class="w-full h-full object-cover" alt="foto"/><div th:unless="${mentor.fotoProfil != null}" class="w-full h-full bg-[#001142] flex items-center justify-center text-white font-black text-sm" th:text="${#strings.substring(mentor.namaLengkap, 0, 2).toUpperCase()}">ME</div></div>
+    </div>
+  </div>
+</header>
+
+<!-- ==================== MAIN CONTENT ==================== -->
+<main id="mainContent" class="pt-[72px] min-h-screen flex flex-col">
+<div class="flex-1 w-full  px-margin-desktop py-10 space-y-12">
+
+  <!-- ── HERO ── -->
+  <section class="relative overflow-hidden rounded-3xl bg-primary-container p-10 md:p-12 text-white flex items-center justify-between shadow-2xl min-h-[280px]">
+    <!-- Glow blobs (no external images) -->
+    <div class="absolute -top-20 -right-20 w-[420px] h-[420px] bg-primary-fixed-dim/20 rounded-full blur-[100px] pointer-events-none"></div>
+    <div class="absolute -bottom-20 -left-20 w-[280px] h-[280px] bg-blue-900/40 rounded-full blur-[80px] pointer-events-none"></div>
+
+    <div class="relative z-10 max-w-lg">
+      <span class="inline-block px-3 py-1 rounded-full bg-white/10 border border-white/20 text-[10px] font-black uppercase tracking-widest mb-4">PUSAT BANTUAN</span>
+      <h2 class="font-display-lg text-[40px] font-black leading-tight mb-4">Ada yang bisa<br/>kami bantu?</h2>
+      <p class="text-primary-fixed-dim/90 font-body-lg mb-8">Temukan solusi teknis, panduan mentorship, dan jawaban atas pertanyaan Anda di sini.</p>
+      <div class="flex gap-4 flex-wrap">
+        <button class="bg-white text-primary-container px-8 py-3 rounded-full font-black tracking-widest text-label-sm shadow-xl active:scale-95 transition-all hover:shadow-2xl">
+          HUBUNGI DUKUNGAN
+        </button>
+        <button class="border border-white/30 hover:bg-white/10 px-8 py-3 rounded-full font-black tracking-widest text-label-sm transition-all">
+          LIHAT TIKET
+        </button>
+      </div>
+    </div>
+
+    <!-- Abstract decoration (no image) -->
+    <div class="relative hidden lg:flex items-center justify-center w-[320px] h-[220px] flex-shrink-0">
+      <div class="absolute w-40 h-40 rounded-full bg-white/5 border border-white/10"></div>
+      <div class="absolute w-64 h-64 rounded-full bg-white/5 border border-white/10"></div>
+      <div class="absolute w-28 h-28 rounded-3xl bg-white/10 border border-white/20 flex items-center justify-center rotate-12">
+        <span class="material-symbols-outlined text-white text-[52px]" style="font-variation-settings:'FILL' 1;">support_agent</span>
+      </div>
+      <div class="absolute top-4 right-8 w-10 h-10 rounded-xl bg-white/15 border border-white/20 flex items-center justify-center -rotate-6">
+        <span class="material-symbols-outlined text-white text-[18px]" style="font-variation-settings:'FILL' 1;">chat</span>
+      </div>
+      <div class="absolute bottom-8 left-6 w-10 h-10 rounded-xl bg-white/15 border border-white/20 flex items-center justify-center rotate-6">
+        <span class="material-symbols-outlined text-white text-[18px]" style="font-variation-settings:'FILL' 1;">verified</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CATEGORY CARDS ── -->
+  <section class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+    <div class="group bg-white rounded-2xl p-7 shadow-sm border-l-4 border-primary hover:shadow-xl transition-all cursor-pointer">
+      <div class="w-11 h-11 rounded-xl bg-primary/10 flex items-center justify-center text-primary mb-6">
+        <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">groups</span>
+      </div>
+      <h3 class="font-headline-md text-headline-md mb-2">Panduan Mentor</h3>
+      <p class="text-on-surface-variant font-body-md mb-6">Cara memaksimalkan sesi mentoring, etika komunikasi, dan jadwal bimbingan.</p>
+      <div class="flex items-center text-primary font-bold text-label-sm gap-2 group-hover:gap-3 transition-all">
+        PELAJARI LEBIH LANJUT <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+      </div>
+    </div>
+
+    <div class="group bg-white rounded-2xl p-7 shadow-sm border-l-4 border-error-crimson hover:shadow-xl transition-all cursor-pointer">
+      <div class="w-11 h-11 rounded-xl bg-error-crimson/10 flex items-center justify-center text-error-crimson mb-6">
+        <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">terminal</span>
+      </div>
+      <h3 class="font-headline-md text-headline-md mb-2">Masalah Teknis</h3>
+      <p class="text-on-surface-variant font-body-md mb-6">Kendala login, akses konten, atau error pada dashboard interaktif.</p>
+      <div class="flex items-center text-error-crimson font-bold text-label-sm gap-2 group-hover:gap-3 transition-all">
+        LAPORKAN MASALAH <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+      </div>
+    </div>
+
+    <div class="group bg-white rounded-2xl p-7 shadow-sm border-l-4 border-success-green hover:shadow-xl transition-all cursor-pointer">
+      <div class="w-11 h-11 rounded-xl bg-success-green/10 flex items-center justify-center text-success-green mb-6">
+        <span class="material-symbols-outlined" style="font-variation-settings:'FILL' 1;">token</span>
+      </div>
+      <h3 class="font-headline-md text-headline-md mb-2">Sistem Poin</h3>
+      <p class="text-on-surface-variant font-body-md mb-6">Informasi mengenai perolehan poin prestasi dan cara menukarnya dengan reward.</p>
+      <div class="flex items-center text-success-green font-bold text-label-sm gap-2 group-hover:gap-3 transition-all">
+        CEK SISTEM POIN <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FAQ ── -->
+  <section class="max-w-4xl mx-auto w-full">
+    <div class="text-center mb-10">
+      <span class="inline-block px-4 py-1 rounded-full bg-primary/10 text-primary font-black text-caption-xs mb-4">PERTANYAAN POPULER</span>
+      <h2 class="font-headline-md text-[28px] font-black">Paling Sering Ditanyakan</h2>
+    </div>
+    <div class="space-y-4" id="faqList">
+
+      <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-outline-variant/30">
+        <button class="faq-btn w-full flex items-center justify-between p-6 text-left" onclick="toggleFaq(this)">
+          <span class="font-body-lg font-bold text-[16px]">Bagaimana cara mengganti mentor jika tidak merasa cocok?</span>
+          <span class="material-symbols-outlined transition-transform duration-300 flex-shrink-0">expand_more</span>
+        </button>
+        <div class="faq-content px-6">
+          <p class="pb-6 text-on-surface-variant font-body-md leading-relaxed">Anda dapat mengajukan permohonan pergantian mentor melalui tab 'Pengaturan Bimbingan' setelah melewati 3 sesi pertama. Tim akademik kami akan meninjau alasan Anda dan mencocokkan kembali dengan profil mentor lain dalam 2×24 jam.</p>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-outline-variant/30">
+        <button class="faq-btn w-full flex items-center justify-between p-6 text-left" onclick="toggleFaq(this)">
+          <span class="font-body-lg font-bold text-[16px]">Apakah sertifikat course di Jejak Ilmu diakui secara resmi?</span>
+          <span class="material-symbols-outlined transition-transform duration-300 flex-shrink-0">expand_more</span>
+        </button>
+        <div class="faq-content px-6">
+          <p class="pb-6 text-on-surface-variant font-body-md leading-relaxed">Benar. Setiap sertifikat yang diterbitkan oleh Jejak Ilmu dilengkapi dengan QR Code verifikasi dan telah diakui oleh mitra institusi pendidikan nasional sebagai bukti kompetensi tambahan.</p>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-outline-variant/30">
+        <button class="faq-btn w-full flex items-center justify-between p-6 text-left" onclick="toggleFaq(this)">
+          <span class="font-body-lg font-bold text-[16px]">Kapan poin prestasi saya akan diperbarui?</span>
+          <span class="material-symbols-outlined transition-transform duration-300 flex-shrink-0">expand_more</span>
+        </button>
+        <div class="faq-content px-6">
+          <p class="pb-6 text-on-surface-variant font-body-md leading-relaxed">Poin prestasi otomatis diperbarui sesaat setelah mentor memberikan feedback sesi. Jika terjadi keterlambatan, mohon tunggu maksimal 1 jam sebelum menghubungi tim teknis.</p>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-outline-variant/30">
+        <button class="faq-btn w-full flex items-center justify-between p-6 text-left" onclick="toggleFaq(this)">
+          <span class="font-body-lg font-bold text-[16px]">Bagaimana cara menjadi Mentor di Jejak Ilmu?</span>
+          <span class="material-symbols-outlined transition-transform duration-300 flex-shrink-0">expand_more</span>
+        </button>
+        <div class="faq-content px-6">
+          <p class="pb-6 text-on-surface-variant font-body-md leading-relaxed">Mahasiswa dengan IPK ≥ 3.0, rating ≥ 4.0, dan minimal 5 sesi mentoring aktif dapat mengajukan diri sebagai mentor. Permohonan dikirim melalui halaman profil dan ditinjau oleh dosen supervisor.</p>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-2xl shadow-sm overflow-hidden border border-outline-variant/30">
+        <button class="faq-btn w-full flex items-center justify-between p-6 text-left" onclick="toggleFaq(this)">
+          <span class="font-body-lg font-bold text-[16px]">Apa itu Asisten Dosen dan bagaimana cara meraihnya?</span>
+          <span class="material-symbols-outlined transition-transform duration-300 flex-shrink-0">expand_more</span>
+        </button>
+        <div class="faq-content px-6">
+          <p class="pb-6 text-on-surface-variant font-body-md leading-relaxed">Asisten Dosen (Asdos) adalah status kehormatan bagi mentor terbaik yang direkomendasikan oleh dosen supervisor. Penilaian didasarkan pada skor kelayakan yang mencakup IPK, jumlah sesi, dan rating dari mentee.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ── SUPPORT BANNER ── -->
+  <section class="bg-surface-container-high rounded-3xl p-10 flex flex-col md:flex-row items-center gap-8 justify-between border border-outline-variant/50">
+    <div class="flex items-center gap-6">
+      <!-- Avatar stack (no external images) -->
+      <div class="flex -space-x-3">
+        <div class="w-12 h-12 rounded-full border-2 border-white bg-[#001142] flex items-center justify-center text-white font-black text-sm flex-shrink-0">AK</div>
+        <div class="w-12 h-12 rounded-full border-2 border-white bg-[#1a3a8c] flex items-center justify-center text-white font-black text-sm flex-shrink-0">RS</div>
+        <div class="w-12 h-12 rounded-full border-2 border-white bg-[#4e5c8f] flex items-center justify-center text-white font-black text-sm flex-shrink-0">DM</div>
+      </div>
+      <div>
+        <h4 class="font-body-lg font-bold">Masih butuh bantuan khusus?</h4>
+        <p class="text-on-surface-variant font-body-md">Tim kami tersedia 24/7 untuk membantu Anda.</p>
+      </div>
+    </div>
+    <div class="flex gap-4 flex-wrap">
+      <button class="bg-white border border-outline-variant text-primary px-8 py-3 rounded-xl font-black tracking-widest text-label-sm shadow-sm hover:shadow-md transition-all active:scale-95">
+        WHATSAPP KAMI
+      </button>
+      <button class="bg-primary text-white px-8 py-3 rounded-xl font-black tracking-widest text-label-sm shadow-xl hover:shadow-2xl active:scale-95 transition-all">
+        CHAT SEKARANG
+      </button>
+    </div>
+  </section>
+
+</div>
+
+</main>
+
+<script>
+  function toggleFaq(btn) {
+    const content = btn.nextElementSibling;
+    const icon = btn.querySelector('.material-symbols-outlined');
+    const isOpen = content.classList.contains('open');
+
+    // Close all
+    document.querySelectorAll('.faq-content').forEach(c => {
+      c.style.maxHeight = null;
+      c.classList.remove('open');
+    });
+    document.querySelectorAll('.faq-btn .material-symbols-outlined').forEach(i => {
+      i.style.transform = 'rotate(0deg)';
+    });
+
+    // Open clicked if it was closed
+    if (!isOpen) {
+      content.style.maxHeight = content.scrollHeight + 'px';
+      content.classList.add('open');
+      icon.style.transform = 'rotate(180deg)';
+    }
+  }
+</script>
+
+<script>
+function toggleSidebar() {
+  document.body.classList.toggle('sb-collapsed');
+  const icon = document.getElementById('sb-toggle-icon');
+  if (icon) icon.textContent = document.body.classList.contains('sb-collapsed') ? 'chevron_right' : 'chevron_left';
+  try { localStorage.setItem('sb-collapsed', document.body.classList.contains('sb-collapsed')); } catch(e) {}
+}
+document.addEventListener('DOMContentLoaded', function() {
+  try {
+    if (localStorage.getItem('sb-collapsed') === 'true') {
+      document.body.classList.add('sb-collapsed');
+      const icon = document.getElementById('sb-toggle-icon');
+      if (icon) icon.textContent = 'chevron_right';
+    }
+  } catch(e) {}
+  document.addEventListener('click', function(e) {
+    const popups = document.querySelectorAll('.popup-panel');
+    popups.forEach(p => { if (!p.contains(e.target) && !e.target.closest('[onclick*="togglePopup"]')) p.classList.add('hidden'); });
+  });
+});
+function togglePopup(id, event) {
+  if (event) event.stopPropagation();
+  const el = document.getElementById(id);
+  if (el) el.classList.toggle('hidden');
+}
+</script>
+</body>
+</html>
+
